@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Theme Colors */
+:root {
+  --gh-bg: #0d1117;
+  --gh-bg-subtle: #161b22;
+  --gh-border: #30363d;
+  --gh-text: #c9d1d9;
+  --gh-text-muted: #8b949e;
+  --gh-accent: #238636;
+  --gh-accent-hover: #2ea043;
+}
+
+/* Base Styles */
+body {
+  background-color: var(--gh-bg);
+  color: var(--gh-text);
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gh-bg-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gh-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gh-accent);
+}
+
+/* Utility Classes */
+.bg-gh {
+  background-color: var(--gh-bg);
+}
+
+.bg-gh-subtle {
+  background-color: var(--gh-bg-subtle);
+}
+
+.border-gh {
+  border-color: var(--gh-border);
+}
+
+.text-gh {
+  color: var(--gh-text);
+}
+
+.text-gh-muted {
+  color: var(--gh-text-muted);
+}
+
+.hover-border-accent:hover {
+  border-color: var(--gh-accent);
+}
+
+.btn-accent {
+  background-color: var(--gh-accent);
+  color: var(--gh-text);
+}
+
+.btn-accent:hover {
+  background-color: var(--gh-accent-hover);
+} 

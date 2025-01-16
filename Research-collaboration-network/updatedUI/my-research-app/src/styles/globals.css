@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Theme Colors */
+:root {
+    --gh-bg: #0d1117;
+    --gh-bg-subtle: #161b22;
+    --gh-border: #30363d;
+    --gh-text: #c9d1d9;
+    --gh-text-muted: #8b949e;
+    --gh-accent: #79f13d;
+    --gh-accent-hover: #1cf143;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--gh-bg);
+    color: var(--gh-text);
+}
+
+.bg-gh {
+    background-color: var(--gh-bg);
+}
+
+.bg-gh-subtle {
+    background-color: var(--gh-bg-subtle);
+}
+
+.border-gh {
+    border-color: var(--gh-border);
+}
+
+.text-muted {
+    color: var(--gh-text-muted);
+}
+
+.btn-accent {
+    background-color: var(--gh-accent);
+    color: white;
+}
+
+.btn-accent:hover {
+    background-color: var(--gh-accent-hover);
+}

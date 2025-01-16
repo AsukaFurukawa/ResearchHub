@@ -1,0 +1,158 @@
+digraph ER {
+	rankdir=TB
+	node [fillcolor=lightgrey shape=box style=filled]
+	User [label=USER]
+	Project [label=PROJECT]
+	Team [label=TEAM]
+	Paper [label=PAPER]
+	Comment [label=COMMENT]
+	Notification [label=NOTIFICATION]
+	TeamInvitation [label=TEAM_INVITATION]
+	Conference [label=CONFERENCE]
+	Registration [label=REGISTRATION]
+	node [fillcolor=white shape=diamond style="filled,diagonals"]
+	Works_On [label=WORKS_ON]
+	Member_Of [label=MEMBER_OF]
+	Manages [label=MANAGES]
+	Authors [label=AUTHORS]
+	Comments_On [label=COMMENTS_ON]
+	Receives [label=RECEIVES]
+	Invites [label=INVITES]
+	Presents_At [label=PRESENTS_AT]
+	Registers_For [label=REGISTERS_FOR]
+	node [fillcolor=white shape=oval style=filled]
+	User_ID [label=<u>ID</u>]
+	Username [label=Username]
+	Email [label=Email]
+	Password [label=Password_Hash]
+	Full_Name [label=Full_Name]
+	Role [label=Role]
+	Institution [label=Institution]
+	Bio [label=Bio]
+	Profile_Image [label=Profile_Image]
+	User_Created_At [label=Created_At]
+	Project_ID [label=<u>ID</u>]
+	Project_Title [label=Title]
+	Project_Desc [label=Description]
+	Category [label=Category]
+	Progress [label=Progress]
+	Is_Private [label=Is_Private]
+	Project_Created_At [label=Created_At]
+	Repository_URL [label=Repository_URL]
+	Team_ID [label=<u>ID</u>]
+	Team_Name [label=Name]
+	Team_Desc [label=Description]
+	Team_Created_At [label=Created_At]
+	Visibility [label=Visibility]
+	Paper_ID [label=<u>ID</u>]
+	Paper_Title [label=Title]
+	Paper_Abstract [label=Abstract]
+	DOI [label=DOI]
+	Publication_Date [label=Publication_Date]
+	Paper_Created_At [label=Created_At]
+	Comment_ID [label=<u>ID</u>]
+	Content [label=Content]
+	Comment_Created_At [label=Created_At]
+	Notification_ID [label=<u>ID</u>]
+	Type [label=Type]
+	Message [label=Message]
+	Is_Read [label=Is_Read]
+	Notification_Created_At [label=Created_At]
+	Invitation_ID [label=<u>ID</u>]
+	Status [label=Status]
+	Invitation_Created_At [label=Created_At]
+	Conference_ID [label=<u>ID</u>]
+	Conference_Name [label=Name]
+	Conference_Desc [label=Description]
+	Start_Date [label=Start_Date]
+	End_Date [label=End_Date]
+	Location [label=Location]
+	Conference_Created_At [label=Created_At]
+	Max_Participants [label=Max_Participants]
+	Registration_Deadline [label=Registration_Deadline]
+	Registration_ID [label=<u>ID</u>]
+	Registration_Date [label=Registration_Date]
+	Status [label=Status]
+	Registration_Created_At [label=Created_At]
+	edge [dir=none]
+	User -> User_ID
+	User -> Username
+	User -> Email
+	User -> Password
+	User -> Full_Name
+	User -> Role
+	User -> Institution
+	User -> Bio
+	User -> Profile_Image
+	User -> User_Created_At
+	Project -> Project_ID
+	Project -> Project_Title
+	Project -> Project_Desc
+	Project -> Category
+	Project -> Progress
+	Project -> Is_Private
+	Project -> Project_Created_At
+	Project -> Repository_URL
+	Team -> Team_ID
+	Team -> Team_Name
+	Team -> Team_Desc
+	Team -> Team_Created_At
+	Team -> Visibility
+	Paper -> Paper_ID
+	Paper -> Paper_Title
+	Paper -> Paper_Abstract
+	Paper -> DOI
+	Paper -> Publication_Date
+	Paper -> Paper_Created_At
+	Comment -> Comment_ID
+	Comment -> Content
+	Comment -> Comment_Created_At
+	Notification -> Notification_ID
+	Notification -> Type
+	Notification -> Message
+	Notification -> Is_Read
+	Notification -> Notification_Created_At
+	TeamInvitation -> Invitation_ID
+	TeamInvitation -> Status
+	TeamInvitation -> Invitation_Created_At
+	Conference -> Conference_ID
+	Conference -> Conference_Name
+	Conference -> Conference_Desc
+	Conference -> Start_Date
+	Conference -> End_Date
+	Conference -> Location
+	Conference -> Conference_Created_At
+	Conference -> Max_Participants
+	Conference -> Registration_Deadline
+	Registration -> Registration_ID
+	Registration -> Registration_Date
+	Registration -> Status
+	Registration -> Registration_Created_At
+	User -> Works_On [label=N]
+	Works_On -> Project [label=M]
+	User -> Member_Of [label=N]
+	Member_Of -> Team [label=M]
+	Team -> Manages [label=1]
+	Manages -> Project [label=N]
+	User -> Authors [label=N]
+	Authors -> Paper [label=M]
+	User -> Comments_On [label=1]
+	Comments_On -> Comment [label=N]
+	Comment -> Project [label=N]
+	Comment -> Paper [label=N]
+	User -> Receives [label=1]
+	Receives -> Notification [label=N]
+	Team -> Invites [label=1]
+	Invites -> TeamInvitation [label=N]
+	TeamInvitation -> User [label=1]
+	Paper -> Presents_At [label=N]
+	Presents_At -> Conference [label=1]
+	User -> Registers_For [label=1]
+	Registers_For -> Registration [label=N]
+	Registration -> Conference [label=1]
+	rankdir=TB
+	splines=ortho
+	nodesep=0.75
+	ranksep=0.75
+	dpi=300
+}
