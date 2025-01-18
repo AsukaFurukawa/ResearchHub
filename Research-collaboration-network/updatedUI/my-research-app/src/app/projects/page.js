@@ -1,113 +1,128 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { FiPlus } from 'react-icons/fi';
-import dynamic from 'next/dynamic';
-import ProjectCard from '@/components/ProjectCard';
-
-const NewProjectModal = dynamic(() => import('@/components/modals/NewProjectModal'), {
-  ssr: false,
-});
+import { FiPlus, FiSearch, FiFilter, FiLock, FiUnlock, FiUsers } from 'react-icons/fi';
+import Link from 'next/link';
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/projects', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setProjects(Array.isArray(data) ? data : []);
-        }
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-        setProjects([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProjects();
   }, []);
 
-  const handleNewProject = async (projectData) => {
+  const fetchProjects = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/projects', {
-        method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(projectData)
+        }
       });
-
       if (response.ok) {
-        const newProject = await response.json();
-        setProjects(prev => [newProject, ...prev]);
-        setIsModalOpen(false);
-      } else {
-        console.error('Failed to create project');
+        const data = await response.json();
+        setProjects(data);
       }
     } catch (error) {
-      console.error('Error creating project:', error);
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3fb950]"></div>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#3fb950]"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl font-semibold text-[#c9d1d9]">All Projects</h2>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center px-4 py-2 bg-[#238636] text-[#c9d1d9] rounded-lg hover:bg-[#2ea043] transition-colors"
-          >
-            <FiPlus className="mr-2" />
-            <span>NEW PROJECT</span>
-          </button>
+    <div className="flex-1 bg-[#0d1117]">
+      {/* Header */}
+      <div className="border-b border-[#21262d] bg-[#0d1117]">
+        <div className="px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-semibold text-[#c9d1d9]">All Projects</h1>
+              <button className="px-3 py-1.5 text-sm font-medium text-[#c9d1d9] bg-[#238636] hover:bg-[#2ea043] rounded-md transition-colors flex items-center gap-2">
+                <FiPlus className="w-4 h-4" />
+                New Project
+              </button>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8b949e]" />
+                <input
+                  type="text"
+                  placeholder="Search projects..."
+                  className="w-64 px-10 py-1.5 bg-[#0d1117] border border-[#30363d] rounded-md text-[#c9d1d9] placeholder-[#8b949e] focus:outline-none focus:border-[#3fb950] focus:ring-1 focus:ring-[#3fb950]"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <button className="px-3 py-1.5 text-sm text-[#c9d1d9] border border-[#30363d] rounded-md hover:border-[#8b949e] transition-colors flex items-center gap-2">
+                <FiFilter className="w-4 h-4" />
+                Filters
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
 
+      {/* Project List */}
+      <div className="px-8 py-6">
         {projects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <p className="text-[#8b949e] text-lg mb-2">No projects found</p>
-            <p className="text-[#8b949e] mb-8">Create your first project to get started</p>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center px-4 py-2 bg-[#238636] text-[#c9d1d9] rounded-lg hover:bg-[#2ea043] transition-colors"
-            >
-              <FiPlus className="mr-2" />
-              <span>Create your first project</span>
+          <div className="text-center py-16 bg-[#161b22] rounded-lg border border-[#30363d]">
+            <h3 className="text-xl font-medium text-[#c9d1d9] mb-2">No projects found</h3>
+            <p className="text-[#8b949e] mb-6">Get started by creating a new project</p>
+            <button className="px-4 py-2 text-sm font-medium text-[#c9d1d9] bg-[#238636] hover:bg-[#2ea043] rounded-md transition-colors flex items-center gap-2 mx-auto">
+              <FiPlus className="w-4 h-4" />
+              New Project
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-2">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <div
+                key={project.id}
+                className="flex items-center justify-between px-4 py-3 bg-[#0d1117] hover:bg-[#161b22] border border-[#30363d] rounded-md transition-colors group"
+              >
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="text-[#8b949e]">
+                    {project.isPrivate ? <FiLock className="w-4 h-4" /> : <FiUnlock className="w-4 h-4" />}
+                  </div>
+                  <div>
+                    <Link
+                      href={`/projects/${project.id}`}
+                      className="text-[#58a6ff] hover:underline font-medium"
+                    >
+                      {project.title}
+                    </Link>
+                    <p className="text-sm text-[#8b949e] mt-0.5">{project.description}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 text-sm text-[#8b949e]">
+                  {project.mainTechnology && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#3fb950]"></span>
+                      <span>{project.mainTechnology}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1.5">
+                    <FiUsers className="w-4 h-4" />
+                    <span>{project.collaborators?.length || 0}</span>
+                  </div>
+                  <span>Updated {new Date(project.updatedAt).toLocaleDateString()}</span>
+                </div>
+              </div>
             ))}
           </div>
         )}
       </div>
-
-      <NewProjectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleNewProject}
-      />
     </div>
   );
 } 
