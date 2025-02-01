@@ -1,9 +1,5 @@
-'use client';
-
-import TeamsClient from './client';
-
-export const dynamic = 'force-dynamic';
+import TeamsClientWrapper from '@/components/teams/TeamsClientWrapper';
 
 export default function TeamsPage() {
-  return <TeamsClient />;
+  return <TeamsClientWrapper />;
 } 

@@ -1,148 +1,222 @@
-import { Box, Typography, Avatar, AvatarGroup, Chip, LinearProgress } from '@mui/material';
-import { Lock as PrivateIcon, Public as PublicIcon } from '@mui/icons-material';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { CircularProgress } from '@mui/material';
+import { 
+  Box, 
+  Typography, 
+  Avatar, 
+  AvatarGroup, 
+  Chip,
+  Skeleton,
+  Alert
+} from '@mui/material';
+import { Group as GroupIcon } from '@mui/icons-material';
+
+// Dynamically import MUI components
+const BoxDynamic = dynamic(() => import('@mui/material/Box'), { ssr: false });
+const TypographyDynamic = dynamic(() => import('@mui/material/Typography'), { ssr: false });
+const AvatarDynamic = dynamic(() => import('@mui/material/Avatar'), { ssr: false });
+const AvatarGroupDynamic = dynamic(() => import('@mui/material/AvatarGroup'), { ssr: false });
+const ChipDynamic = dynamic(() => import('@mui/material/Chip'), { ssr: false });
+const AlertDynamic = dynamic(() => import('@mui/material/Alert'), { ssr: false });
+const SkeletonDynamic = dynamic(() => import('@mui/material/Skeleton'), { ssr: false });
+const GroupIconDynamic = dynamic(() => import('@mui/icons-material/Group'), { ssr: false });
+
+function LoadingSpinner() {
+  return (
+    <BoxDynamic sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+      <CircularProgress />
+    </BoxDynamic>
+  );
+}
 
 export default function TeamsList() {
-  // Mock data - replace with actual data from API
-  const teams = [
-    {
-      id: 1,
-      name: 'Quantum Research Group',
-      members: [
-        { name: 'Alice Johnson', avatar: '/avatars/alice.jpg' },
-        { name: 'Bob Smith', avatar: '/avatars/bob.jpg' },
-        { name: 'Carol White', avatar: '/avatars/carol.jpg' },
-        { name: 'David Brown', avatar: '/avatars/david.jpg' },
-        { name: 'Eve Wilson', avatar: '/avatars/eve.jpg' }
-      ],
-      activeProjects: 3,
-      isPrivate: true,
-      progress: 75
-    },
-    {
-      id: 2,
-      name: 'ML Research Team',
-      members: [
-        { name: 'Frank Miller', avatar: '/avatars/frank.jpg' },
-        { name: 'Grace Lee', avatar: '/avatars/grace.jpg' },
-        { name: 'Henry Davis', avatar: '/avatars/henry.jpg' }
-      ],
-      activeProjects: 2,
-      isPrivate: false,
-      progress: 45
-    },
-    {
-      id: 3,
-      name: 'Genomics Lab',
-      members: [
-        { name: 'Ivy Chen', avatar: '/avatars/ivy.jpg' },
-        { name: 'Jack Wang', avatar: '/avatars/jack.jpg' },
-        { name: 'Kelly Zhang', avatar: '/avatars/kelly.jpg' },
-        { name: 'Liam Brown', avatar: '/avatars/liam.jpg' }
-      ],
-      activeProjects: 4,
-      isPrivate: true,
-      progress: 60
+  const router = useRouter();
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    fetchTeams();
+  }, []);
+
+  const fetchTeams = async () => {
+    try {
+      // Use relative URL to leverage Next.js proxy
+      const response = await fetch('/api/teams', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setTeams(Array.isArray(data) ? data : []);
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching teams:', error);
+      setError('Failed to load teams. Please check if the backend server is running.');
+      setTeams([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (!mounted) {
+    return <LoadingSpinner />;
+  }
+
+  if (loading) {
+    return (
+      <BoxDynamic sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {[1, 2, 3].map((index) => (
+          <BoxDynamic
+            key={index}
+            sx={{
+              bgcolor: '#0d1117',
+              borderRadius: 1,
+              p: 2,
+              border: '1px solid #30363d'
+            }}
+          >
+            <BoxDynamic sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <SkeletonDynamic variant="text" width={150} sx={{ bgcolor: '#30363d' }} />
+              <SkeletonDynamic variant="rectangular" width={80} height={24} sx={{ bgcolor: '#30363d', borderRadius: 1 }} />
+            </BoxDynamic>
+            <BoxDynamic sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <SkeletonDynamic variant="text" width={100} sx={{ bgcolor: '#30363d' }} />
+              <SkeletonDynamic variant="circular" width={24} height={24} sx={{ bgcolor: '#30363d' }} />
+            </BoxDynamic>
+          </BoxDynamic>
+        ))}
+      </BoxDynamic>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert 
+        severity="error" 
+        sx={{ 
+          bgcolor: 'rgba(248, 81, 73, 0.1)',
+          color: '#ff6b6b',
+          border: '1px solid rgba(248, 81, 73, 0.2)',
+          '& .MuiAlert-icon': {
+            color: '#ff6b6b'
+          }
+        }}
+      >
+        {error}
+      </Alert>
+    );
+  }
+
+  if (teams.length === 0) {
+    return (
+      <BoxDynamic
+        sx={{
+          bgcolor: '#161b22',
+          borderRadius: 2,
+          p: 4,
+          border: '1px solid #30363d',
+          textAlign: 'center'
+        }}
+      >
+        <GroupIconDynamic sx={{ fontSize: 48, color: '#8b949e', mb: 2 }} />
+        <TypographyDynamic variant="h6" sx={{ color: '#c9d1d9', mb: 1 }}>
+          No Teams Found
+        </TypographyDynamic>
+        <TypographyDynamic variant="body2" sx={{ color: '#8b949e' }}>
+          Create a new team to get started with collaboration
+        </TypographyDynamic>
+      </BoxDynamic>
+    );
+  }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {teams.map((team) => (
-        <Box
-          key={team.id}
+    <BoxDynamic sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {teams.map((team, teamIndex) => (
+        <BoxDynamic
+          key={team.id || teamIndex}
+          onClick={() => router.push(`/teams/${team.id}`)}
           sx={{
             bgcolor: '#0d1117',
-            borderRadius: 2,
+            borderRadius: 1,
             p: 2,
             border: '1px solid #30363d',
             '&:hover': {
-              borderColor: '#3fb950',
-              boxShadow: '0 0 10px rgba(63, 185, 80, 0.1)',
-              cursor: 'pointer'
+              borderColor: '#2ea043',
+              cursor: 'pointer',
+              transform: 'translateY(-1px)',
+              transition: 'all 0.2s'
             }
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="subtitle1" sx={{ color: '#ffffff', fontWeight: 600 }}>
+          <BoxDynamic sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <BoxDynamic sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <GroupIconDynamic sx={{ color: '#2ea043' }} />
+              <TypographyDynamic variant="subtitle1" sx={{ color: '#ffffff' }}>
                 {team.name}
-              </Typography>
-              {team.isPrivate ? (
-                <PrivateIcon sx={{ color: '#8b949e', fontSize: 16 }} />
-              ) : (
-                <PublicIcon sx={{ color: '#3fb950', fontSize: 16 }} />
-              )}
-            </Box>
-            <Chip
-              label={`${team.activeProjects} projects`}
+              </TypographyDynamic>
+            </BoxDynamic>
+            <ChipDynamic
+              label={`${team.activeProjects || 0} Projects`}
               size="small"
               sx={{
-                bgcolor: 'rgba(63, 185, 80, 0.1)',
-                color: '#3fb950',
-                height: 24,
-                borderRadius: 1
+                bgcolor: 'rgba(46, 160, 67, 0.1)',
+                color: '#2ea043',
+                border: '1px solid #2ea043'
               }}
             />
-          </Box>
+          </BoxDynamic>
 
-          <Box sx={{ mb: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-              <Typography variant="body2" sx={{ color: '#8b949e' }}>
-                Overall Progress
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#3fb950' }}>
-                {team.progress}%
-              </Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={team.progress}
-              sx={{
-                bgcolor: 'rgba(63, 185, 80, 0.1)',
-                borderRadius: 1,
-                height: 4,
-                '& .MuiLinearProgress-bar': {
-                  bgcolor: '#3fb950'
-                }
-              }}
-            />
-          </Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <AvatarGroup
-              max={4}
-              sx={{
-                '& .MuiAvatar-root': {
-                  width: 28,
-                  height: 28,
-                  fontSize: '0.875rem',
-                  border: '2px solid #0d1117'
-                }
-              }}
-            >
-              {team.members.map((member, index) => (
-                <Avatar
-                  key={index}
-                  src={member.avatar}
-                  alt={member.name}
-                />
-              ))}
-            </AvatarGroup>
-            
-            <Typography
-              variant="caption"
-              sx={{
+          {team.description && (
+            <TypographyDynamic 
+              variant="body2" 
+              sx={{ 
                 color: '#8b949e',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5
+                mb: 2,
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
               }}
             >
-              {team.members.length} members
-            </Typography>
-          </Box>
-        </Box>
+              {team.description}
+            </TypographyDynamic>
+          )}
+
+          <BoxDynamic sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <TypographyDynamic variant="body2" sx={{ color: '#8b949e' }}>
+              {team.members?.length || 0} Members
+            </TypographyDynamic>
+            <AvatarGroupDynamic max={4}>
+              {(team.members || []).map((member, index) => (
+                <AvatarDynamic
+                  key={member.id || index}
+                  sx={{ 
+                    width: 24, 
+                    height: 24,
+                    fontSize: '0.75rem',
+                    bgcolor: `hsl(${(teamIndex * 90 + index * 60) % 360}, 70%, 30%)`
+                  }}
+                >
+                  {member.initials || member.name?.split(' ').map(n => n[0]).join('')}
+                </AvatarDynamic>
+              ))}
+            </AvatarGroupDynamic>
+          </BoxDynamic>
+        </BoxDynamic>
       ))}
-    </Box>
+    </BoxDynamic>
   );
-} 
+}

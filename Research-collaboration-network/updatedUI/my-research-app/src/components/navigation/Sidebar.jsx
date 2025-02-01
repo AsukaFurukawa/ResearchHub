@@ -1,123 +1,49 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+'use client';
+
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import {
   Box,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Typography,
-  Collapse,
+  Typography
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
-  People as PeopleIcon,
-  Assignment as ProjectIcon,
+  Group as GroupIcon,
+  Description as ProjectIcon,
   Event as EventIcon,
   Message as MessageIcon,
+  Science as ResearchIcon,
   Settings as SettingsIcon,
-  Security as SecurityIcon,
-  ExpandLess,
-  ExpandMore,
-  Science as ScienceIcon,
+  Security as SecurityIcon
 } from '@mui/icons-material';
 
 export default function Sidebar() {
-  const router = useRouter();
-  const [openMenus, setOpenMenus] = useState({});
-
-  const handleMenuClick = (menuKey) => {
-    setOpenMenus(prev => ({
-      ...prev,
-      [menuKey]: !prev[menuKey]
-    }));
-  };
+  const pathname = usePathname();
 
   const menuItems = [
-    {
-      icon: <DashboardIcon />,
-      text: 'Overview',
-      path: '/overview'
-    },
-    {
-      icon: <ProjectIcon />,
-      text: 'Projects',
-      path: '/projects'
-    },
-    {
-      icon: <PeopleIcon />,
-      text: 'Teams',
-      path: '/teams'
-    },
-    {
-      icon: <EventIcon />,
-      text: 'Events',
-      path: '/events'
-    },
-    {
-      icon: <MessageIcon />,
-      text: 'Messages',
-      path: '/messages'
-    },
-    {
-      icon: <ScienceIcon />,
-      text: 'Research',
-      path: '/research'
-    }
+    { path: '/dashboard', icon: <DashboardIcon />, text: 'Overview' },
+    { path: '/projects', icon: <ProjectIcon />, text: 'Projects' },
+    { path: '/teams', icon: <GroupIcon />, text: 'Teams' },
+    { path: '/events', icon: <EventIcon />, text: 'Events' },
+    { path: '/messages', icon: <MessageIcon />, text: 'Messages' },
+    { path: '/research', icon: <ResearchIcon />, text: 'Research' },
   ];
 
   const bottomMenuItems = [
-    {
-      icon: <SettingsIcon />,
-      text: 'Settings',
-      path: '/settings'
-    },
-    {
-      icon: <SecurityIcon />,
-      text: 'Security',
-      path: '/security'
-    }
+    { path: '/settings', icon: <SettingsIcon />, text: 'Settings' },
+    { path: '/security', icon: <SecurityIcon />, text: 'Security' },
   ];
 
-  const MenuItem = ({ item }) => {
-    const isActive = router.pathname === item.path;
-
-    return (
-      <ListItem
-        button
-        onClick={() => router.push(item.path)}
-        sx={{
-          borderRadius: 1,
-          mb: 0.5,
-          color: isActive ? '#3fb950' : '#8b949e',
-          '&:hover': {
-            bgcolor: 'rgba(63, 185, 80, 0.1)',
-            color: '#3fb950',
-            '& .MuiListItemIcon-root': {
-              color: '#3fb950'
-            }
-          }
-        }}
-      >
-        <ListItemIcon sx={{ color: isActive ? '#3fb950' : '#8b949e', minWidth: 40 }}>
-          {item.icon}
-        </ListItemIcon>
-        <ListItemText 
-          primary={item.text}
-          primaryTypographyProps={{
-            fontSize: '0.9rem',
-            fontWeight: isActive ? 600 : 400
-          }}
-        />
-      </ListItem>
-    );
-  };
+  const isActive = (path) => pathname === path;
 
   return (
     <Box
       sx={{
-        width: 260,
-        flexShrink: 0,
+        width: 240,
         bgcolor: '#161b22',
         borderRight: '1px solid #30363d',
         height: '100vh',
@@ -129,39 +55,96 @@ export default function Sidebar() {
         flexDirection: 'column'
       }}
     >
-      {/* Logo */}
-      <Box sx={{ p: 3, borderBottom: '1px solid #30363d' }}>
-        <Typography
-          variant="h5"
-          sx={{
-            color: '#3fb950',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }}
-        >
-          <ScienceIcon /> ResearchHub
-        </Typography>
+      <Box sx={{ p: 3 }}>
+        <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              color: '#2ea043',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+          >
+            <ResearchIcon /> ResearchHub
+          </Typography>
+        </Link>
       </Box>
 
-      {/* Main Menu */}
-      <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
-        <List>
-          {menuItems.map((item, index) => (
-            <MenuItem key={index} item={item} />
-          ))}
-        </List>
-      </Box>
+      <List sx={{ flex: 1, pt: 0 }}>
+        {menuItems.map((item) => (
+          <Link 
+            key={item.path} 
+            href={item.path}
+            style={{ textDecoration: 'none' }}
+            passHref
+          >
+            <ListItem
+              sx={{
+                color: isActive(item.path) ? '#2ea043' : '#8b949e',
+                bgcolor: isActive(item.path) ? 'rgba(46, 160, 67, 0.1)' : 'transparent',
+                '&:hover': {
+                  bgcolor: isActive(item.path) ? 'rgba(46, 160, 67, 0.15)' : 'rgba(139, 148, 158, 0.1)',
+                  color: isActive(item.path) ? '#2ea043' : '#c9d1d9'
+                },
+                borderRadius: 1,
+                mb: 0.5,
+                cursor: 'pointer'
+              }}
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text}
+                primaryTypographyProps={{
+                  fontSize: '0.9rem',
+                  fontWeight: isActive(item.path) ? 600 : 400
+                }}
+              />
+            </ListItem>
+          </Link>
+        ))}
+      </List>
 
-      {/* Bottom Menu */}
-      <Box sx={{ p: 2, borderTop: '1px solid #30363d' }}>
-        <List>
-          {bottomMenuItems.map((item, index) => (
-            <MenuItem key={index} item={item} />
-          ))}
-        </List>
-      </Box>
+      <List sx={{ pt: 0 }}>
+        {bottomMenuItems.map((item) => (
+          <Link 
+            key={item.path} 
+            href={item.path}
+            style={{ textDecoration: 'none' }}
+            passHref
+          >
+            <ListItem
+              sx={{
+                color: isActive(item.path) ? '#2ea043' : '#8b949e',
+                bgcolor: isActive(item.path) ? 'rgba(46, 160, 67, 0.1)' : 'transparent',
+                '&:hover': {
+                  bgcolor: isActive(item.path) ? 'rgba(46, 160, 67, 0.15)' : 'rgba(139, 148, 158, 0.1)',
+                  color: isActive(item.path) ? '#2ea043' : '#c9d1d9'
+                },
+                borderRadius: 1,
+                mb: 0.5,
+                cursor: 'pointer'
+              }}
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text}
+                primaryTypographyProps={{
+                  fontSize: '0.9rem',
+                  fontWeight: isActive(item.path) ? 600 : 400
+                }}
+              />
+            </ListItem>
+          </Link>
+        ))}
+      </List>
     </Box>
   );
 } 

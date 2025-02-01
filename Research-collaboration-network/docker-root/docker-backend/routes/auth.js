@@ -75,12 +75,17 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
+    // Generate JWT token with consistent payload structure
     const token = jwt.sign(
-      { userId: user.id },
+      { 
+        userId: user.id,
+        role: user.role || 'user'
+      },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );
+
+    console.log('Login successful for user:', { id: user.id, email: user.email });
 
     res.json({
       token,
@@ -89,7 +94,7 @@ router.post('/login', async (req, res) => {
         email: user.email,
         firstName: user.first_name,
         lastName: user.last_name,
-        role: user.role
+        role: user.role || 'user'
       }
     });
   } catch (error) {

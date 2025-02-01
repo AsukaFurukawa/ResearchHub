@@ -6,6 +6,7 @@ const auth = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
+      console.log('No token provided in request');
       return res.status(401).json({ message: 'No authentication token, access denied' });
     }
 
@@ -13,8 +14,12 @@ const auth = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
     
     // Add user info to request
-    req.user = { id: decoded.userId };
+    req.user = { 
+      id: decoded.userId || decoded.id, // Handle both token formats
+      role: decoded.role 
+    };
     
+    console.log('Auth middleware: User authenticated', req.user);
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);
