@@ -3,13 +3,15 @@
 import React, { useState } from 'react';
 import { FiSearch, FiBell, FiChevronDown } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function TopNav() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const pathname = usePathname();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    logout();
     window.location.href = '/auth/login';
   };
 
@@ -20,7 +22,7 @@ export default function TopNav() {
   };
 
   return (
-    <div className="h-16 bg-[#0d1117] border-b border-[#21262d] px-4 flex items-center justify-between">
+    <div className="h-16 bg-[#0d1117] border-b border-[#21262d] px-4 flex items-center justify-between ml-64">
       <div className="flex items-center flex-1">
         <h1 className="text-xl font-semibold text-[#c9d1d9]">{getPageTitle()}</h1>
         <div className="ml-8 flex-1 max-w-2xl">
@@ -28,7 +30,7 @@ export default function TopNav() {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8b949e]" />
             <input
               type="text"
-              placeholder="Search projects..."
+              placeholder="Search..."
               className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg pl-10 pr-4 py-1.5 text-[#c9d1d9] placeholder-[#8b949e] focus:outline-none focus:border-[#3fb950]"
             />
           </div>

@@ -19,7 +19,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-[#161b22] border-r border-[#21262d] flex flex-col fixed h-full">
+    <div className="w-64 bg-[#161b22] border-r border-[#21262d] flex flex-col h-screen fixed">
       {/* Logo */}
       <div className="px-4 py-5 flex items-center">
         <span className="text-[#3fb950] text-2xl mr-2">⚗️</span>
@@ -36,22 +36,22 @@ export default function Sidebar() {
         <NavItem href="/projects" icon={FiFolder} isActive={pathname === '/projects'}>
           Projects
         </NavItem>
-        <NavItem href="/teams" icon={FiUsers} isActive={pathname === '/teams'} hasSubmenu>
+        <NavItem href="/teams" icon={FiUsers} isActive={pathname === '/teams'}>
           Teams
         </NavItem>
-        <NavItem href="/events" icon={FiCalendar} isActive={pathname === '/events'} hasSubmenu>
+        <NavItem href="/events" icon={FiCalendar} isActive={pathname === '/events'}>
           Events
         </NavItem>
         <NavItem href="/messages" icon={FiMessageSquare} isActive={pathname === '/messages'}>
           Messages
         </NavItem>
-        <NavItem href="/research" icon={FiBeaker} isActive={pathname === '/research'} hasSubmenu>
+        <NavItem href="/research" icon={FiBeaker} isActive={pathname === '/research'}>
           Research
         </NavItem>
       </nav>
 
       {/* Bottom section */}
-      <div className="px-2 py-4 mt-auto">
+      <div className="px-2 py-4 mt-auto border-t border-[#21262d]">
         <NavItem href="/settings" icon={FiSettings} isActive={pathname === '/settings'}>
           Settings
         </NavItem>
