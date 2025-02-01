@@ -195,9 +195,10 @@ export default function TeamsContent() {
     <Box 
       sx={{ 
         bgcolor: '#0d1117',
-        minHeight: "calc(100vh - 64px)",
+        minHeight: "100vh",
         width: '100%',
-        pt: 4,
+        pl: '256px',
+        pt: '64px',
         pb: 6
       }}
     >
@@ -213,7 +214,8 @@ export default function TeamsContent() {
             display: "flex", 
             justifyContent: "space-between", 
             alignItems: "center", 
-            mb: 4
+            mb: 4,
+            mt: 2
           }}
         >
           <Typography 
